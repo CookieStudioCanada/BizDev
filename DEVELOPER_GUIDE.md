@@ -48,10 +48,10 @@ src/
 │   ├── AnalyticsDashboard.tsx # KPI dashboard
 │   └── CsvManager.tsx      # Import/export
 ├── pages/                  # Route components
+│   ├── HomePage.tsx        # Dashboard landing page
 │   ├── ContactsPage.tsx
 │   ├── CampaignsPage.tsx
-│   ├── TimelinePage.tsx
-│   └── AnalyticsPage.tsx
+│   └── TimelinePage.tsx    # Activities (renamed from Timeline)
 ├── store/
 │   └── useLrgmStore.ts     # Zustand store
 ├── lib/
@@ -131,9 +131,56 @@ interface LrgmStore {
 }
 ```
 
+## Recent Major Updates (2024)
+
+### Mobile-First Responsive Design
+- **Progressive Enhancement**: Built mobile-first, enhanced for larger screens
+- **Touch Optimization**: Proper button sizes and spacing for mobile devices
+- **Responsive Layouts**: Components adapt from single to multi-column layouts
+- **Breakpoint Strategy**: Strategic use of Tailwind's responsive prefixes
+
+### Enhanced User Experience
+- **Home Dashboard**: New landing page with upcoming events and quick actions
+- **Contact Details Modal**: Comprehensive view showing related campaigns and activities
+- **Calendar View**: Added calendar mode to activities timeline
+- **Improved Forms**: Enhanced dropdowns with icons and better interactions
+- **Mobile Navigation**: Streamlined navigation optimized for all devices
+
+### Technical Improvements
+- **React Router v7 Ready**: Added future flags for smooth migration
+- **Clean Architecture**: Removed analytics section for focused experience
+- **Performance**: Optimized bundle size and loading states
+- **Accessibility**: Improved ARIA attributes and keyboard navigation
+- **Deployment Fix**: Removed gh-pages dependency to fix GitHub Actions deployment
+
 ## Key Features
 
-### 1. Contact Management (`ContactTable.tsx`)
+### 1. Home Dashboard (`HomePage.tsx`)
+```typescript
+// Welcome interface with key information
+const HomePage = () => {
+  const { activities, campaigns } = useLrgmStore();
+  
+  // Get upcoming events (next 7 days)
+  const upcomingEvents = activities
+    .filter(activity => {
+      const activityDate = new Date(activity.date);
+      const now = new Date();
+      const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return activityDate >= now && activityDate <= nextWeek;
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+  // Get active campaigns
+  const activeCampaigns = campaigns.filter(c => c.status === 'LIVE');
+  
+  return (
+    // Dashboard layout with upcoming events and quick actions
+  );
+};
+```
+
+### 2. Enhanced Contact Management (`ContactTable.tsx`)
 ```typescript
 // Add new contact
 const addContact = () => {
@@ -469,6 +516,21 @@ npx tsc --noEmit  # Check without building
 # Verify GitHub Pages settings
 # Check repository permissions
 # Verify workflow file syntax
+
+# Common deployment fixes:
+# 1. Remove gh-pages cache if switching from gh-pages to GitHub Actions
+rm -rf node_modules/.cache/gh-pages
+npm uninstall gh-pages
+
+# 2. Verify base path configuration
+# vite.config.ts: base: '/BizDev/'
+# App.tsx: <Router basename="/BizDev">
+
+# 3. Check .nojekyll file exists in public/
+ls -la public/.nojekyll
+
+# 4. Verify GitHub Pages source is set to "GitHub Actions"
+# Repository Settings > Pages > Source: GitHub Actions
 ```
 
 ## Contributing
