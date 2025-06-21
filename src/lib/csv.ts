@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import JSZip from 'jszip';
-import { Contact, Campaign, Activity, LrgmData } from './types';
+import { Contact, Activity, LrgmData } from './types';
 
 export const exportToCSV = async (data: LrgmData) => {
   const zip = new JSZip();
@@ -43,7 +43,7 @@ export const exportToCSV = async (data: LrgmData) => {
 };
 
 export const importFromFiles = (files: FileList): Promise<Partial<LrgmData>> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const result: Partial<LrgmData> = {};
     let processedFiles = 0;
     const totalFiles = files.length;

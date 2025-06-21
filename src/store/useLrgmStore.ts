@@ -26,7 +26,7 @@ interface LrgmStore extends LrgmData {
 
 export const useLrgmStore = create<LrgmStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       contacts: [],
       campaigns: [],
       activities: [],

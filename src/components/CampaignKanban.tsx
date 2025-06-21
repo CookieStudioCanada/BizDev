@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Campaign, Contact } from '@/lib/types';
+import { Campaign } from '@/lib/types';
 import { useLrgmStore } from '@/store/useLrgmStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
+
 import { Plus, Edit, Trash2, Calendar, Users } from 'lucide-react';
 
 const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
   const { contacts, updateCampaign, deleteCampaign } = useLrgmStore();
-  const [isEditing, setIsEditing] = useState(false);
+
 
   const audienceContacts = contacts.filter(c => campaign.audienceIds.includes(c.id));
   
@@ -42,7 +42,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{campaign.title}</CardTitle>
           <div className="flex space-x-1">
-            <Button size="sm" variant="ghost" onClick={() => setIsEditing(true)}>
+            <Button size="sm" variant="ghost" onClick={() => {}}>
               <Edit className="w-4 h-4" />
             </Button>
             <Button size="sm" variant="ghost" onClick={handleDelete}>

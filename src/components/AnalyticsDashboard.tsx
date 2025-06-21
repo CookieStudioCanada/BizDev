@@ -1,26 +1,6 @@
-import React from 'react';
 import { useLrgmStore } from '@/store/useLrgmStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Activity, Mail, TrendingUp } from 'lucide-react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 export const AnalyticsDashboard = () => {
   const { contacts, campaigns, activities } = useLrgmStore();
@@ -41,57 +21,10 @@ export const AnalyticsDashboard = () => {
 
   const campaignsSentYTD = campaigns.filter(campaign => {
     const campaignDate = new Date(campaign.datePlanned);
-    return campaignDate.getFullYear() === currentYear && campaign.status === 'SENT';
+    return campaignDate.getFullYear() === currentYear && campaign.status === 'CLOSED';
   }).length;
 
-  // Prepare chart data - last 6 months of activities
-  const getMonthlyActivityData = () => {
-    const monthlyData: Record<string, number> = {};
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
-    // Initialize last 6 months
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      const monthKey = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-      monthlyData[monthKey] = 0;
-    }
 
-    // Count activities by month
-    activities.forEach(activity => {
-      const activityDate = new Date(activity.date);
-      const monthKey = `${monthNames[activityDate.getMonth()]} ${activityDate.getFullYear()}`;
-      if (monthKey in monthlyData) {
-        monthlyData[monthKey]++;
-      }
-    });
-
-    return {
-      labels: Object.keys(monthlyData),
-      datasets: [
-        {
-          label: 'Activities',
-          data: Object.values(monthlyData),
-          backgroundColor: 'rgba(59, 130, 246, 0.5)',
-          borderColor: 'rgba(59, 130, 246, 1)',
-          borderWidth: 1,
-        },
-      ],
-    };
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: 'Monthly Activity Count',
-      },
-    },
-  };
 
   return (
     <div className="space-y-6">
@@ -151,7 +84,7 @@ export const AnalyticsDashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">
               {campaigns.length > 0 
-                ? Math.round((campaigns.filter(c => c.status === 'COMPLETED').length / campaigns.length) * 100)
+                ? Math.round((campaigns.filter(c => c.status === 'CLOSED').length / campaigns.length) * 100)
                 : 0
               }%
             </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { CampaignKanban } from '@/components/CampaignKanban';
 
 export const CampaignsPage = () => {
