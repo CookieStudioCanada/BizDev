@@ -140,13 +140,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router 
-      basename="/BizDev"
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
+    <Router basename="/BizDev">
       <AppLayout>
         <Routes>
           <Route path="/" element={<HomePage />} />
