@@ -4,10 +4,9 @@ import { HomePage } from '@/pages/HomePage';
 import { ContactsPage } from '@/pages/ContactsPage';
 import { CampaignsPage } from '@/pages/CampaignsPage';
 import { TimelinePage } from '@/pages/TimelinePage';
-import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { CsvManager } from '@/components/CsvManager';
 import { Button } from '@/components/ui/button';
-import { Users, Mail, Clock, BarChart3, Menu, Sun, Moon, Home } from 'lucide-react';
+import { Users, Mail, Clock, Menu, Sun, Moon, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Navigation = () => {
@@ -19,7 +18,6 @@ const Navigation = () => {
     { path: '/contacts', label: 'Contacts', icon: Users },
     { path: '/campaigns', label: 'Campaigns', icon: Mail },
     { path: '/timeline', label: 'Activities', icon: Clock },
-    { path: '/analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
   return (
@@ -155,7 +153,6 @@ function App() {
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/campaigns" element={<CampaignsPage />} />
           <Route path="/timeline" element={<TimelinePage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
         </Routes>
       </AppLayout>
     </Router>

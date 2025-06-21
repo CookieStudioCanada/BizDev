@@ -1,7 +1,7 @@
 import { useLrgmStore } from '@/store/useLrgmStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Calendar, TrendingUp, Users, Mail, Clock, ArrowRight } from 'lucide-react';
+import { Plus, Calendar, Users, Mail, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const HomePage = () => {
@@ -20,15 +20,6 @@ export const HomePage = () => {
 
   // Get active campaigns
   const activeCampaigns = campaigns.filter(c => c.status === 'LIVE').slice(0, 3);
-
-
-
-  const today = new Date();
-  const thisMonth = activities.filter(activity => {
-    const activityDate = new Date(activity.date);
-    return activityDate.getMonth() === today.getMonth() && 
-           activityDate.getFullYear() === today.getFullYear();
-  }).length;
 
   const getContactName = (contactId: string) => {
     const contact = contacts.find(c => c.id === contactId);
@@ -61,61 +52,6 @@ export const HomePage = () => {
         <p className="text-muted-foreground mt-2">
           Your business relationship management dashboard
         </p>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Contacts</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{contacts.length}</div>
-            <div className="text-xs text-muted-foreground">
-              {contacts.filter(c => c.category === 'CLIENT').length} clients
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Campaigns</CardTitle>
-            <Mail className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activeCampaigns.length}</div>
-            <div className="text-xs text-muted-foreground">
-              {campaigns.length} total campaigns
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">This Month</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{thisMonth}</div>
-            <div className="text-xs text-muted-foreground">
-              activities completed
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{upcomingActivities.length}</div>
-            <div className="text-xs text-muted-foreground">
-              events this week
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
