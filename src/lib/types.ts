@@ -1,6 +1,5 @@
 export type Contact = {
   id: string;
-  category: 'CLIENT' | 'PARTNER' | 'PROSPECT';
   firstName: string;
   lastName: string;
   org?: string;
@@ -23,7 +22,7 @@ export type Activity = {
   id: string;
   contactId: string;
   date: string;
-  type: 'EMAIL' | 'CALL' | 'MEETING' | 'EVENT';
+  type: 'EMAIL' | 'CALL' | 'LUNCH' | 'EVENT';
   summary: string;
   details?: string;
 };

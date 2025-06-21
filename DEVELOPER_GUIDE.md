@@ -70,7 +70,6 @@ src/
 // Contact Management
 interface Contact {
   id: string;
-  category: 'CLIENT' | 'PARTNER' | 'PROSPECT';
   firstName: string;
   lastName: string;
   org?: string;
@@ -95,7 +94,7 @@ interface Activity {
   id: string;
   contactId: string;
   date: string;
-  type: 'EMAIL' | 'CALL' | 'MEETING' | 'EVENT';
+  type: 'EMAIL' | 'CALL' | 'LUNCH' | 'EVENT';
   summary: string;
   details?: string;
 }

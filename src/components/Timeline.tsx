@@ -14,14 +14,14 @@ const ActivityCard = ({ activity }: { activity: Activity }) => {
   const typeIcons = {
     EMAIL: <Mail className="w-4 h-4" />,
     CALL: <Phone className="w-4 h-4" />,
-    MEETING: <MessageSquare className="w-4 h-4" />,
+    LUNCH: <MessageSquare className="w-4 h-4" />,
     EVENT: <Users className="w-4 h-4" />,
   };
 
   const typeColors = {
     EMAIL: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
     CALL: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-    MEETING: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
+    LUNCH: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
     EVENT: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
   };
 
@@ -100,7 +100,7 @@ const ActivityForm = ({
               <option value="">Select a contact</option>
               {contacts.map(contact => (
                 <option key={contact.id} value={contact.id}>
-                  {contact.firstName} {contact.lastName} ({contact.category})
+                  {contact.firstName} {contact.lastName}
                 </option>
               ))}
             </select>
@@ -121,7 +121,7 @@ const ActivityForm = ({
             >
               <option value="EMAIL">📧 Email</option>
               <option value="CALL">📞 Call</option>
-              <option value="MEETING">🤝 Meeting</option>
+              <option value="LUNCH">🍽️ Lunch</option>
               <option value="EVENT">🎉 Event</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -382,7 +382,7 @@ export const Timeline = () => {
                           className={`text-xs p-1 rounded truncate ${
                             activity.type === 'EMAIL' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100' :
                             activity.type === 'CALL' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
-                            activity.type === 'MEETING' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100' :
+                            activity.type === 'LUNCH' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100' :
                             'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100'
                           }`}
                         >

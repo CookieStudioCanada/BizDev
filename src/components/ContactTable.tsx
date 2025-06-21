@@ -8,19 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 import { Plus, Edit, Trash2, Eye, Mail, Calendar, Users } from 'lucide-react';
 
-const CategoryBadge = ({ category }: { category: Contact['category'] }) => {
-  const variants = {
-    CLIENT: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-    PARTNER: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
-    PROSPECT: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100',
-  };
-  
-  return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${variants[category]}`}>
-      {category}
-    </span>
-  );
-};
+
 
 const ContactForm = ({ 
   contact, 
@@ -32,7 +20,6 @@ const ContactForm = ({
   onCancel: () => void;
 }) => {
   const [formData, setFormData] = useState({
-    category: contact?.category || 'PROSPECT' as Contact['category'],
     firstName: contact?.firstName || '',
     lastName: contact?.lastName || '',
     org: contact?.org || '',
@@ -214,9 +201,6 @@ export const ContactTable = () => {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Contact Information</h3>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <CategoryBadge category={viewingContact.category} />
-                      </div>
                       {viewingContact.org && (
                         <p><span className="font-medium">Organization:</span> {viewingContact.org}</p>
                       )}
@@ -295,7 +279,7 @@ export const ContactTable = () => {
                             <span className={`px-2 py-1 text-xs rounded-full font-medium ${
                               activity.type === 'EMAIL' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100' :
                               activity.type === 'CALL' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
-                              activity.type === 'MEETING' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100' :
+                              activity.type === 'LUNCH' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100' :
                               'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100'
                             }`}>
                               {activity.type}
@@ -338,7 +322,6 @@ export const ContactTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
               <TableHead>Organization</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
@@ -350,9 +333,6 @@ export const ContactTable = () => {
               <TableRow key={contact.id}>
                 <TableCell className="font-medium">
                   {contact.firstName} {contact.lastName}
-                </TableCell>
-                <TableCell>
-                  <CategoryBadge category={contact.category} />
                 </TableCell>
                 <TableCell>{contact.org || '-'}</TableCell>
                 <TableCell>{contact.email || '-'}</TableCell>
@@ -400,7 +380,6 @@ export const ContactTable = () => {
                 <h3 className="font-medium text-base">
                   {contact.firstName} {contact.lastName}
                 </h3>
-                <CategoryBadge category={contact.category} />
               </div>
               <div className="flex space-x-1">
                 <Button

@@ -6,10 +6,6 @@ export const AnalyticsDashboard = () => {
   const { contacts, campaigns, activities } = useLrgmStore();
 
   // Calculate KPIs
-  const contactsByCategory = contacts.reduce((acc, contact) => {
-    acc[contact.category] = (acc[contact.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
 
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
@@ -45,7 +41,7 @@ export const AnalyticsDashboard = () => {
           <CardContent>
             <div className="text-2xl font-bold">{contacts.length}</div>
             <div className="text-xs text-muted-foreground mt-1">
-              {contactsByCategory.CLIENT || 0} clients, {contactsByCategory.PARTNER || 0} partners, {contactsByCategory.PROSPECT || 0} prospects
+              All contacts
             </div>
           </CardContent>
         </Card>
@@ -102,7 +98,7 @@ export const AnalyticsDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['EMAIL', 'CALL', 'MEETING', 'EVENT'].map(type => {
+            {['EMAIL', 'CALL', 'LUNCH', 'EVENT'].map(type => {
               const count = activities.filter(a => a.type === type).length;
               
               return (

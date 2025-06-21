@@ -84,7 +84,7 @@ export const HomePage = () => {
                         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                           {activity.type === 'EMAIL' && <Mail className="h-4 w-4 text-primary" />}
                           {activity.type === 'CALL' && <Clock className="h-4 w-4 text-primary" />}
-                          {activity.type === 'MEETING' && <Users className="h-4 w-4 text-primary" />}
+                          {activity.type === 'LUNCH' && <Users className="h-4 w-4 text-primary" />}
                           {activity.type === 'EVENT' && <Calendar className="h-4 w-4 text-primary" />}
                         </div>
                       </div>

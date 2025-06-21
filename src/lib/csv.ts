@@ -8,7 +8,7 @@ export const exportToCSV = async (data: LrgmData) => {
   // Export contacts
   const contactsCSV = Papa.unparse(data.contacts, {
     header: true,
-    columns: ['id', 'category', 'firstName', 'lastName', 'org', 'email', 'phone', 'notes']
+    columns: ['id', 'firstName', 'lastName', 'org', 'email', 'phone', 'notes']
   });
   zip.file('contacts.csv', contactsCSV);
   

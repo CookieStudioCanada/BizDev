@@ -68,8 +68,8 @@ pnpm lint
 
 **Contacts CSV Format:**
 ```csv
-id,category,firstName,lastName,org,email,phone,notes
-uuid,CLIENT,John,Doe,Acme Corp,john@acme.com,555-0123,Notes here
+id,firstName,lastName,org,email,phone,notes
+uuid,John,Doe,Acme Corp,john@acme.com,555-0123,Notes here
 ```
 
 **Campaigns CSV Format:**
@@ -87,9 +87,8 @@ uuid,contact-uuid,2024-01-15T10:00:00Z,EMAIL,Follow-up call,Detailed notes
 ### Field Requirements
 
 #### Contacts
-- **Required**: `firstName`, `lastName`, `category`
+- **Required**: `firstName`, `lastName`
 - **Optional**: `org`, `email`, `phone`, `notes`
-- **Category Values**: `CLIENT`, `PARTNER`, `PROSPECT`
 
 #### Campaigns
 - **Required**: `title`, `channel`, `datePlanned`, `status`
@@ -101,7 +100,7 @@ uuid,contact-uuid,2024-01-15T10:00:00Z,EMAIL,Follow-up call,Detailed notes
 #### Activities
 - **Required**: `contactId`, `date`, `type`, `summary`
 - **Optional**: `details`
-- **Type Values**: `EMAIL`, `CALL`, `MEETING`, `EVENT`
+- **Type Values**: `EMAIL`, `CALL`, `LUNCH`, `EVENT`
 - **Date Format**: ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
 
 ## Application Structure
