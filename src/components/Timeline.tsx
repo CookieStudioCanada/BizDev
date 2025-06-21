@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Clock, User, Mail, Phone, MessageSquare, Users } from 'lucide-react';
+import { Plus, Clock, User, Mail, Phone, MessageSquare, Users, Calendar, List } from 'lucide-react';
 
 const ActivityCard = ({ activity }: { activity: Activity }) => {
   const { contacts } = useLrgmStore();
@@ -89,33 +89,47 @@ const ActivityForm = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium">Contact</label>
-          <select 
-            className="w-full mt-1 p-2 border rounded-md bg-background text-foreground"
-            value={formData.contactId}
-            onChange={(e) => setFormData(prev => ({ ...prev, contactId: e.target.value }))}
-            required
-          >
-            <option value="">Select a contact</option>
-            {contacts.map(contact => (
-              <option key={contact.id} value={contact.id}>
-                {contact.firstName} {contact.lastName} - {contact.category}
-              </option>
-            ))}
-          </select>
+          <label className="text-sm font-medium mb-2 block">Contact</label>
+          <div className="relative">
+            <select 
+              className="w-full p-3 border rounded-lg bg-background text-foreground appearance-none cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              value={formData.contactId}
+              onChange={(e) => setFormData(prev => ({ ...prev, contactId: e.target.value }))}
+              required
+            >
+              <option value="">Select a contact</option>
+              {contacts.map(contact => (
+                <option key={contact.id} value={contact.id}>
+                  {contact.firstName} {contact.lastName} ({contact.category})
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
         <div>
-          <label className="text-sm font-medium">Type</label>
-          <select 
-            className="w-full mt-1 p-2 border rounded-md bg-background text-foreground"
-            value={formData.type}
-            onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as Activity['type'] }))}
-          >
-            <option value="EMAIL">Email</option>
-            <option value="CALL">Call</option>
-            <option value="MEETING">Meeting</option>
-            <option value="EVENT">Event</option>
-          </select>
+          <label className="text-sm font-medium mb-2 block">Type</label>
+          <div className="relative">
+            <select 
+              className="w-full p-3 border rounded-lg bg-background text-foreground appearance-none cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              value={formData.type}
+              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as Activity['type'] }))}
+            >
+              <option value="EMAIL">📧 Email</option>
+              <option value="CALL">📞 Call</option>
+              <option value="MEETING">🤝 Meeting</option>
+              <option value="EVENT">🎉 Event</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -132,7 +146,7 @@ const ActivityForm = ({
       <div>
         <label className="text-sm font-medium">Notes</label>
         <textarea 
-          className="w-full mt-1 p-2 border rounded-md bg-blue-50 text-blue-900 placeholder-blue-600"
+          className="w-full mt-1 p-3 border rounded-lg bg-background text-foreground resize-none hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
           rows={4}
           required
           value={formData.summary}
@@ -157,6 +171,7 @@ export const Timeline = () => {
   const { activities, addActivity } = useLrgmStore();
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
   // Sort activities by date (newest first)
   const sortedActivities = [...activities].sort((a, b) => 
@@ -206,23 +221,95 @@ export const Timeline = () => {
     });
   };
 
+    // Generate calendar data for current month
+  const generateCalendarData = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    const calendar = [];
+    const activitiesByDate: Record<string, Activity[]> = {};
+    
+    // Group activities by date for current month
+    activities.forEach(activity => {
+      const activityDate = new Date(activity.date);
+      if (activityDate.getMonth() === month && activityDate.getFullYear() === year) {
+        const dateKey = activityDate.getDate().toString();
+        if (!activitiesByDate[dateKey]) {
+          activitiesByDate[dateKey] = [];
+        }
+        activitiesByDate[dateKey].push(activity);
+      }
+    });
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      calendar.push(null);
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      calendar.push({
+        day,
+        activities: activitiesByDate[day.toString()] || [],
+        isToday: day === today.getDate() && month === today.getMonth() && year === today.getFullYear()
+      });
+    }
+    
+    return { calendar, monthName: firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) };
+  };
+
+  const { calendar, monthName } = generateCalendarData();
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Activity Timeline</h2>
+        <div>
+          <h1 className="text-3xl font-bold">Activities</h1>
+          <p className="text-muted-foreground mt-2">Track your interactions and events</p>
+        </div>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingActivity(null)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Activity
+        <div className="flex items-center space-x-2">
+          <div className="flex bg-muted rounded-lg p-1">
+            <Button
+              size="sm"
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('list')}
+              className="flex items-center gap-2"
+            >
+              <List className="h-4 w-4" />
+              List
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
+            <Button
+              size="sm"
+              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('calendar')}
+              className="flex items-center gap-2"
+            >
+              <Calendar className="h-4 w-4" />
+              Calendar
+            </Button>
+          </div>
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setEditingActivity(null)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Activity
+              </Button>
+            </DialogTrigger>
+          <DialogContent className="max-w-2xl" aria-describedby="activity-dialog-description">
             <DialogHeader>
               <DialogTitle>
                 {editingActivity ? 'Edit Activity' : 'Add New Activity'}
               </DialogTitle>
+              <div id="activity-dialog-description" className="sr-only">
+                {editingActivity ? 'Edit the activity details below' : 'Fill in the form to add a new activity'}
+              </div>
             </DialogHeader>
             <ActivityForm
               activity={editingActivity || undefined}
@@ -234,32 +321,84 @@ export const Timeline = () => {
             />
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        {Object.entries(groupedActivities).map(([date, activities]) => (
-          <div key={date} className="space-y-4">
-            <h3 className="text-lg font-semibold text-muted-foreground border-b pb-2">
-              {formatDateGroup(date)}
-            </h3>
-            <div className="space-y-3">
-              {activities.map(activity => (
-                <ActivityCard key={activity.id} activity={activity} />
-              ))}
+      {viewMode === 'list' ? (
+        <div className="space-y-6">
+          {Object.entries(groupedActivities).map(([date, activities]) => (
+            <div key={date} className="space-y-4">
+              <h3 className="text-lg font-semibold text-muted-foreground border-b pb-2">
+                {formatDateGroup(date)}
+              </h3>
+              <div className="space-y-3">
+                {activities.map(activity => (
+                  <ActivityCard key={activity.id} activity={activity} />
+                ))}
+              </div>
             </div>
+          ))}
+          
+          {activities.length === 0 && (
+            <div className="text-center py-12">
+              <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-muted-foreground">No activities yet</h3>
+              <p className="text-sm text-muted-foreground">
+                Start by adding your first activity to track interactions with your contacts.
+              </p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-center">{monthName}</h3>
+          
+          <div className="grid grid-cols-7 gap-1 mb-4">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
+                {day}
+              </div>
+            ))}
+            
+            {calendar.map((day, index) => (
+              <div
+                key={index}
+                className={`min-h-24 p-2 border rounded-lg ${
+                  day?.isToday ? 'bg-primary/10 border-primary' : 'bg-background'
+                } ${day ? 'hover:bg-accent/50' : ''}`}
+              >
+                {day && (
+                  <>
+                    <div className={`text-sm font-medium mb-1 ${day.isToday ? 'text-primary' : ''}`}>
+                      {day.day}
+                    </div>
+                    <div className="space-y-1">
+                      {day.activities.slice(0, 2).map(activity => (
+                        <div
+                          key={activity.id}
+                          className={`text-xs p-1 rounded truncate ${
+                            activity.type === 'EMAIL' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100' :
+                            activity.type === 'CALL' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
+                            activity.type === 'MEETING' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100' :
+                            'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100'
+                          }`}
+                        >
+                          {activity.summary}
+                        </div>
+                      ))}
+                      {day.activities.length > 2 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{day.activities.length - 2} more
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-        
-        {activities.length === 0 && (
-          <div className="text-center py-12">
-            <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-muted-foreground">No activities yet</h3>
-            <p className="text-sm text-muted-foreground">
-              Start by adding your first activity to track interactions with your contacts.
-            </p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }; 

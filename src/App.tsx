@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HomePage } from '@/pages/HomePage';
 import { ContactsPage } from '@/pages/ContactsPage';
 import { CampaignsPage } from '@/pages/CampaignsPage';
 import { TimelinePage } from '@/pages/TimelinePage';
 import { AnalyticsPage } from '@/pages/AnalyticsPage';
 import { CsvManager } from '@/components/CsvManager';
 import { Button } from '@/components/ui/button';
-import { Users, Mail, Clock, BarChart3, Menu, Sun, Moon } from 'lucide-react';
+import { Users, Mail, Clock, BarChart3, Menu, Sun, Moon, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Navigation = () => {
@@ -14,9 +15,10 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   
   const navItems = [
+    { path: '/', label: 'Home', icon: Home },
     { path: '/contacts', label: 'Contacts', icon: Users },
     { path: '/campaigns', label: 'Campaigns', icon: Mail },
-    { path: '/timeline', label: 'Timeline', icon: Clock },
+    { path: '/timeline', label: 'Activities', icon: Clock },
     { path: '/analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
@@ -140,10 +142,16 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router basename="/BizDev">
+    <Router 
+      basename="/BizDev"
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <AppLayout>
         <Routes>
-          <Route path="/" element={<ContactsPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/campaigns" element={<CampaignsPage />} />
           <Route path="/timeline" element={<TimelinePage />} />

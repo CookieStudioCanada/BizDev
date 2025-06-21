@@ -142,81 +142,146 @@ const CampaignForm = ({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="text-sm font-medium">Channel</label>
-          <select 
-            className="w-full mt-1 p-2 border rounded-md bg-background text-foreground"
-            value={formData.channel}
-            onChange={(e) => setFormData(prev => ({ ...prev, channel: e.target.value as Campaign['channel'] }))}
-          >
-            <option value="BLOG">Blog</option>
-            <option value="NEWSLETTER">Newsletter</option>
-            <option value="WEBINAR">Webinar</option>
-            <option value="DINNER">Dinner</option>
-          </select>
+          <label className="text-sm font-medium mb-2 block">Channel</label>
+          <div className="relative">
+            <select 
+              className="w-full p-3 border rounded-lg bg-background text-foreground appearance-none cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              value={formData.channel}
+              onChange={(e) => setFormData(prev => ({ ...prev, channel: e.target.value as Campaign['channel'] }))}
+            >
+              <option value="BLOG">📝 Blog</option>
+              <option value="NEWSLETTER">📧 Newsletter</option>
+              <option value="WEBINAR">🎥 Webinar</option>
+              <option value="DINNER">🍽️ Dinner</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
         <div>
-          <label className="text-sm font-medium">Planned Date</label>
+          <label className="text-sm font-medium mb-2 block">Planned Date</label>
           <Input 
             type="date"
             required
+            className="p-3 hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             value={formData.datePlanned}
             onChange={(e) => setFormData(prev => ({ ...prev, datePlanned: e.target.value }))}
           />
         </div>
         <div>
-          <label className="text-sm font-medium">Status</label>
-          <select 
-            className="w-full mt-1 p-2 border rounded-md bg-background text-foreground"
-            value={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as Campaign['status'] }))}
-          >
-            <option value="LIVE">Live</option>
-            <option value="CLOSED">Closed</option>
-          </select>
+          <label className="text-sm font-medium mb-2 block">Status</label>
+          <div className="relative">
+            <select 
+              className="w-full p-3 border rounded-lg bg-background text-foreground appearance-none cursor-pointer hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              value={formData.status}
+              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as Campaign['status'] }))}
+            >
+              <option value="LIVE">🟢 Live</option>
+              <option value="CLOSED">⚫ Closed</option>
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
 
 
-      <div>
-        <label className="text-sm font-medium">Audience ({formData.audienceIds.length} selected)</label>
-        <div className="mt-2 max-h-48 overflow-y-auto border rounded-md p-3 bg-background">
-          {contacts.length > 0 ? (
-            <div className="space-y-2">
-              {contacts.map(contact => (
-                <div key={contact.id} className="flex items-center space-x-3 py-1 hover:bg-accent/50 rounded px-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.audienceIds.includes(contact.id)}
-                    onChange={() => toggleContact(contact.id)}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm flex-1">
-                    {contact.firstName} {contact.lastName}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {contact.category}
-                  </span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Audience Selection */}
+        <div>
+          <label className="text-sm font-medium mb-2 block">
+            Audience Selection
+            <span className="ml-2 px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
+              {formData.audienceIds.length} selected
+            </span>
+          </label>
+          <div className="border rounded-lg p-4 bg-accent/20">
+            {contacts.length > 0 ? (
+              <div className="max-h-48 overflow-y-auto space-y-2">
+                {contacts.map(contact => (
+                  <div 
+                    key={contact.id} 
+                    className={`flex items-center space-x-3 p-2 rounded-lg cursor-pointer transition-all hover:bg-accent/50 ${
+                      formData.audienceIds.includes(contact.id) ? 'bg-primary/10 border border-primary/20' : 'hover:bg-accent/30'
+                    }`}
+                    onClick={() => toggleContact(contact.id)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.audienceIds.includes(contact.id)}
+                      onChange={() => toggleContact(contact.id)}
+                      className="w-4 h-4 text-primary"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium truncate">
+                        {contact.firstName} {contact.lastName}
+                      </div>
+                      {contact.org && (
+                        <div className="text-xs text-muted-foreground truncate">
+                          {contact.org}
+                        </div>
+                      )}
+                    </div>
+                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                      contact.category === 'CLIENT' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' :
+                      contact.category === 'PARTNER' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100' :
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100'
+                    }`}>
+                      {contact.category}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground text-center py-4">
+                No contacts available. Add contacts first.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Campaign Details */}
+        <div>
+          <label className="text-sm font-medium mb-2 block">Campaign Details</label>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Objectives & Goals</label>
+              <textarea 
+                className="w-full p-3 border rounded-lg bg-background text-foreground resize-none hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                rows={3}
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Describe campaign objectives, target metrics, or key messages..."
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 bg-accent/30 rounded-lg text-center">
+                <div className="text-sm text-muted-foreground">Target Reach</div>
+                <div className="text-lg font-semibold">{formData.audienceIds.length}</div>
+                <div className="text-xs text-muted-foreground">contacts</div>
+              </div>
+              <div className="p-3 bg-accent/30 rounded-lg text-center">
+                <div className="text-sm text-muted-foreground">Channel</div>
+                <div className="text-lg font-semibold">
+                  {formData.channel === 'BLOG' && '📝'}
+                  {formData.channel === 'NEWSLETTER' && '📧'}
+                  {formData.channel === 'WEBINAR' && '🎥'}
+                  {formData.channel === 'DINNER' && '🍽️'}
                 </div>
-              ))}
+                <div className="text-xs text-muted-foreground">{formData.channel.toLowerCase()}</div>
+              </div>
             </div>
-          ) : (
-            <div className="text-sm text-muted-foreground text-center py-4">
-              No contacts available. Add contacts first.
-            </div>
-          )}
+          </div>
         </div>
-      </div>
-
-      <div>
-        <label className="text-sm font-medium">Notes</label>
-        <textarea 
-          className="w-full mt-1 p-2 border rounded-md bg-background text-foreground"
-          rows={3}
-          value={formData.notes}
-          onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-          placeholder="Add campaign details, objectives, or notes..."
-        />
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">
@@ -252,9 +317,12 @@ export const CampaignKanban = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Campaign Pipeline</h2>
+        <div>
+          <h1 className="text-3xl font-bold">Campaigns</h1>
+          <p className="text-muted-foreground mt-2">Manage your marketing campaigns and track their progress</p>
+        </div>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
@@ -282,6 +350,10 @@ export const CampaignKanban = () => {
             />
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Campaign Pipeline</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
