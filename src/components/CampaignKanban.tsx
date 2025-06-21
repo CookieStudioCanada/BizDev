@@ -122,7 +122,7 @@ const CampaignCard = ({ campaign, onEdit }: { campaign: Campaign; onEdit: (campa
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-full justify-between h-8 text-sm"
         >
-          <span>Campaign Details</span>
+          <span>Campaign Notes</span>
           <ChevronRight className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
         </Button>
       </CardHeader>
@@ -149,7 +149,7 @@ const CampaignCard = ({ campaign, onEdit }: { campaign: Campaign; onEdit: (campa
               <div className="flex items-start gap-2">
                 <Target className="w-4 h-4 mt-1 text-muted-foreground" />
                 <div>
-                  <div className="font-medium text-sm">Objectives</div>
+                  <div className="font-medium text-sm">Notes</div>
                   <div className="text-sm text-muted-foreground whitespace-pre-wrap">{campaign.notes}</div>
                 </div>
               </div>
@@ -328,18 +328,18 @@ const CampaignForm = ({
           </div>
         </div>
 
-        {/* Campaign Details */}
+        {/* Campaign Notes */}
         <div>
-          <label className="text-sm font-medium mb-2 block">Campaign Details</label>
+          <label className="text-sm font-medium mb-2 block">Campaign Notes</label>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Objectives & Goals</label>
+              <label className="text-sm font-medium mb-1 block">Notes</label>
               <textarea 
                 className="w-full p-3 border rounded-lg bg-background text-foreground resize-none hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 rows={3}
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder="Describe campaign objectives, target metrics, or key messages..."
+                placeholder="Add campaign notes, objectives, or key messages..."
               />
             </div>
             
