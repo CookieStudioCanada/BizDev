@@ -140,7 +140,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/BizDev">
       <AppLayout>
         <Routes>
           <Route path="/" element={<ContactsPage />} />
