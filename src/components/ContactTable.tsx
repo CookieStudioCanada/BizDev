@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-import { Plus, Edit, Trash2, Eye, Mail, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Mail, Calendar, Users } from 'lucide-react';
 
 const CategoryBadge = ({ category }: { category: Contact['category'] }) => {
   const variants = {
@@ -161,16 +161,16 @@ export const ContactTable = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Contacts</h1>
-          <p className="text-muted-foreground mt-2">Manage your contacts</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Contacts</h1>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base">Manage your contacts</p>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingContact(null)}>
+            <Button onClick={() => setEditingContact(null)} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Add Contact
             </Button>
@@ -332,7 +332,8 @@ export const ContactTable = () => {
         </Dialog>
       </div>
 
-      <div className="rounded-lg border">
+      {/* Desktop Table */}
+      <div className="hidden md:block rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -341,7 +342,7 @@ export const ContactTable = () => {
               <TableHead>Organization</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead className="w-20">Actions</TableHead>
+              <TableHead className="w-32">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -388,6 +389,76 @@ export const ContactTable = () => {
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {filteredContacts.map((contact) => (
+          <div key={contact.id} className="bg-card border rounded-lg p-4 space-y-3">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-medium text-base">
+                  {contact.firstName} {contact.lastName}
+                </h3>
+                <CategoryBadge category={contact.category} />
+              </div>
+              <div className="flex space-x-1">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleView(contact)}
+                  title="View Details"
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleEdit(contact)}
+                  title="Edit Contact"
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleDelete(contact.id)}
+                  title="Delete Contact"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            
+            {contact.org && (
+              <div className="text-sm text-muted-foreground">
+                <span className="font-medium">Organization:</span> {contact.org}
+              </div>
+            )}
+            
+            {contact.email && (
+              <div className="text-sm text-muted-foreground">
+                <span className="font-medium">Email:</span> {contact.email}
+              </div>
+            )}
+            
+            {contact.phone && (
+              <div className="text-sm text-muted-foreground">
+                <span className="font-medium">Phone:</span> {contact.phone}
+              </div>
+            )}
+          </div>
+        ))}
+        
+        {filteredContacts.length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-muted-foreground">No contacts yet</h3>
+            <p className="text-sm text-muted-foreground">
+              Start by adding your first contact to manage your network.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

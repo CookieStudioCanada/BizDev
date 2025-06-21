@@ -45,21 +45,21 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8 p-4 md:p-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Welcome to BizDev</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="text-center md:text-left">
+        <h1 className="text-2xl md:text-3xl font-bold">Welcome to BizDev</h1>
+        <p className="text-muted-foreground mt-2 text-sm md:text-base">
           Your business relationship management dashboard
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
         {/* Upcoming Activities */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                 <Calendar className="h-5 w-5" />
                 Upcoming Events
               </CardTitle>
@@ -67,7 +67,7 @@ export const HomePage = () => {
                 Next 7 days
               </p>
             </div>
-            <Button asChild size="sm" variant="outline">
+            <Button asChild size="sm" variant="outline" className="w-full sm:w-auto">
               <Link to="/timeline">
                 View All
                 <ArrowRight className="h-4 w-4 ml-2" />
@@ -76,24 +76,26 @@ export const HomePage = () => {
           </CardHeader>
           <CardContent>
             {upcomingActivities.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {upcomingActivities.map(activity => (
-                  <div key={activity.id} className="flex items-center gap-3 p-3 rounded-lg bg-accent/50">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        {activity.type === 'EMAIL' && <Mail className="h-4 w-4 text-primary" />}
-                        {activity.type === 'CALL' && <Clock className="h-4 w-4 text-primary" />}
-                        {activity.type === 'MEETING' && <Users className="h-4 w-4 text-primary" />}
-                        {activity.type === 'EVENT' && <Calendar className="h-4 w-4 text-primary" />}
+                  <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-lg bg-accent/50">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          {activity.type === 'EMAIL' && <Mail className="h-4 w-4 text-primary" />}
+                          {activity.type === 'CALL' && <Clock className="h-4 w-4 text-primary" />}
+                          {activity.type === 'MEETING' && <Users className="h-4 w-4 text-primary" />}
+                          {activity.type === 'EVENT' && <Calendar className="h-4 w-4 text-primary" />}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm md:text-base">{activity.summary}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {getContactName(activity.contactId)}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{activity.summary}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {getContactName(activity.contactId)}
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0 text-right">
+                    <div className="flex-shrink-0 text-left sm:text-right">
                       <div className="text-sm font-medium">{formatDate(activity.date)}</div>
                       <div className="text-xs text-muted-foreground">{formatTime(activity.date)}</div>
                     </div>
@@ -117,9 +119,9 @@ export const HomePage = () => {
 
         {/* Active Campaigns */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between space-y-2 sm:space-y-0">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                 <Mail className="h-5 w-5" />
                 Active Campaigns
               </CardTitle>
@@ -127,7 +129,7 @@ export const HomePage = () => {
                 Currently running
               </p>
             </div>
-            <Button asChild size="sm" variant="outline">
+            <Button asChild size="sm" variant="outline" className="w-full sm:w-auto">
               <Link to="/campaigns">
                 View All
                 <ArrowRight className="h-4 w-4 ml-2" />
@@ -136,17 +138,19 @@ export const HomePage = () => {
           </CardHeader>
           <CardContent>
             {activeCampaigns.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {activeCampaigns.map(campaign => (
-                  <div key={campaign.id} className="p-3 rounded-lg bg-accent/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium">{campaign.title}</h4>
-                      <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-100">
+                  <div key={campaign.id} className="p-4 rounded-lg bg-accent/50">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+                      <h4 className="font-medium text-sm md:text-base">{campaign.title}</h4>
+                      <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-100 w-fit">
                         {campaign.channel}
                       </span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {campaign.audienceIds.length} contacts • Planned: {new Date(campaign.datePlanned).toLocaleDateString()}
+                      <span className="block sm:inline">{campaign.audienceIds.length} contacts</span>
+                      <span className="hidden sm:inline"> • </span>
+                      <span className="block sm:inline">Planned: {new Date(campaign.datePlanned).toLocaleDateString()}</span>
                     </div>
                   </div>
                 ))}
@@ -170,34 +174,34 @@ export const HomePage = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle className="text-lg md:text-xl">Quick Actions</CardTitle>
           <p className="text-sm text-muted-foreground">
             Get started with common tasks
           </p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button asChild className="h-auto p-4 flex-col gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Button asChild className="h-auto p-4 md:p-6 flex-col gap-2">
               <Link to="/contacts">
-                <Users className="h-6 w-6" />
-                <span>Add Contact</span>
-                <span className="text-xs opacity-75">Manage your network</span>
+                <Users className="h-6 w-6 md:h-8 md:w-8" />
+                <span className="text-sm md:text-base font-medium">Add Contact</span>
+                <span className="text-xs opacity-75 text-center">Manage your network</span>
               </Link>
             </Button>
             
-            <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
+            <Button asChild variant="outline" className="h-auto p-4 md:p-6 flex-col gap-2">
               <Link to="/campaigns">
-                <Mail className="h-6 w-6" />
-                <span>Create Campaign</span>
-                <span className="text-xs opacity-75">Launch new outreach</span>
+                <Mail className="h-6 w-6 md:h-8 md:w-8" />
+                <span className="text-sm md:text-base font-medium">Create Campaign</span>
+                <span className="text-xs opacity-75 text-center">Launch new outreach</span>
               </Link>
             </Button>
             
-            <Button asChild variant="outline" className="h-auto p-4 flex-col gap-2">
+            <Button asChild variant="outline" className="h-auto p-4 md:p-6 flex-col gap-2 sm:col-span-2 lg:col-span-1">
               <Link to="/timeline">
-                <Calendar className="h-6 w-6" />
-                <span>Log Activity</span>
-                <span className="text-xs opacity-75">Track interactions</span>
+                <Calendar className="h-6 w-6 md:h-8 md:w-8" />
+                <span className="text-sm md:text-base font-medium">Log Activity</span>
+                <span className="text-xs opacity-75 text-center">Track interactions</span>
               </Link>
             </Button>
           </div>

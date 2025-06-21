@@ -317,16 +317,16 @@ export const CampaignKanban = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Campaigns</h1>
-          <p className="text-muted-foreground mt-2">Manage your marketing campaigns and track their progress</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Campaigns</h1>
+          <p className="text-muted-foreground mt-2 text-sm md:text-base">Manage your marketing campaigns and track their progress</p>
         </div>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingCampaign(null)}>
+            <Button onClick={() => setEditingCampaign(null)} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Create Campaign
             </Button>
@@ -356,26 +356,36 @@ export const CampaignKanban = () => {
         <h2 className="text-xl font-semibold mb-4">Campaign Pipeline</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
-          <h3 className="font-semibold mb-4 text-green-700 dark:text-green-300">
+          <h3 className="font-semibold mb-4 text-green-700 dark:text-green-300 text-lg">
             Live ({campaignsByStatus.LIVE.length})
           </h3>
-          <div>
+          <div className="space-y-4">
             {campaignsByStatus.LIVE.map(campaign => (
               <CampaignCard key={campaign.id} campaign={campaign} />
             ))}
+            {campaignsByStatus.LIVE.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">No live campaigns</p>
+              </div>
+            )}
           </div>
         </div>
 
         <div>
-          <h3 className="font-semibold mb-4 text-gray-700 dark:text-gray-300">
+          <h3 className="font-semibold mb-4 text-gray-700 dark:text-gray-300 text-lg">
             Closed ({campaignsByStatus.CLOSED.length})
           </h3>
-          <div>
+          <div className="space-y-4">
             {campaignsByStatus.CLOSED.map(campaign => (
               <CampaignCard key={campaign.id} campaign={campaign} />
             ))}
+            {campaignsByStatus.CLOSED.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">No closed campaigns</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -265,39 +265,18 @@ export const Timeline = () => {
 
   const { calendar, monthName } = generateCalendarData();
 
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Activities</h1>
-          <p className="text-muted-foreground mt-2">Track your interactions and events</p>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <div className="flex bg-muted rounded-lg p-1">
-            <Button
-              size="sm"
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              onClick={() => setViewMode('list')}
-              className="flex items-center gap-2"
-            >
-              <List className="h-4 w-4" />
-              List
-            </Button>
-            <Button
-              size="sm"
-              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
-              onClick={() => setViewMode('calendar')}
-              className="flex items-center gap-2"
-            >
-              <Calendar className="h-4 w-4" />
-              Calendar
-            </Button>
+      return (
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">Activities</h1>
+            <p className="text-muted-foreground mt-2 text-sm md:text-base">Track your interactions and events</p>
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => setEditingActivity(null)}>
+              <Button onClick={() => setEditingActivity(null)} className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Activity
               </Button>
@@ -319,8 +298,32 @@ export const Timeline = () => {
                 setEditingActivity(null);
               }}
             />
-          </DialogContent>
-        </Dialog>
+                      </DialogContent>
+          </Dialog>
+        </div>
+        
+        {/* View Mode Toggle */}
+        <div className="flex justify-center">
+          <div className="flex bg-muted rounded-lg p-1 w-full sm:w-auto">
+            <Button
+              size="sm"
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('list')}
+              className="flex items-center gap-2 flex-1 sm:flex-none"
+            >
+              <List className="h-4 w-4" />
+              List
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('calendar')}
+              className="flex items-center gap-2 flex-1 sm:flex-none"
+            >
+              <Calendar className="h-4 w-4" />
+              Calendar
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -351,11 +354,11 @@ export const Timeline = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-center">{monthName}</h3>
+          <h3 className="text-lg md:text-xl font-semibold text-center">{monthName}</h3>
           
-          <div className="grid grid-cols-7 gap-1 mb-4">
+          <div className="grid grid-cols-7 gap-1 md:gap-2">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
+              <div key={day} className="p-1 md:p-2 text-center text-xs md:text-sm font-medium text-muted-foreground">
                 {day}
               </div>
             ))}
@@ -363,17 +366,17 @@ export const Timeline = () => {
             {calendar.map((day, index) => (
               <div
                 key={index}
-                className={`min-h-24 p-2 border rounded-lg ${
+                className={`min-h-16 md:min-h-24 p-1 md:p-2 border rounded-lg ${
                   day?.isToday ? 'bg-primary/10 border-primary' : 'bg-background'
                 } ${day ? 'hover:bg-accent/50' : ''}`}
               >
                 {day && (
                   <>
-                    <div className={`text-sm font-medium mb-1 ${day.isToday ? 'text-primary' : ''}`}>
+                    <div className={`text-xs md:text-sm font-medium mb-1 ${day.isToday ? 'text-primary' : ''}`}>
                       {day.day}
                     </div>
                     <div className="space-y-1">
-                      {day.activities.slice(0, 2).map(activity => (
+                      {day.activities.slice(0, window.innerWidth < 768 ? 1 : 2).map(activity => (
                         <div
                           key={activity.id}
                           className={`text-xs p-1 rounded truncate ${
@@ -386,9 +389,9 @@ export const Timeline = () => {
                           {activity.summary}
                         </div>
                       ))}
-                      {day.activities.length > 2 && (
+                      {day.activities.length > (window.innerWidth < 768 ? 1 : 2) && (
                         <div className="text-xs text-muted-foreground">
-                          +{day.activities.length - 2} more
+                          +{day.activities.length - (window.innerWidth < 768 ? 1 : 2)} more
                         </div>
                       )}
                     </div>
