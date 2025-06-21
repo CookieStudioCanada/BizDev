@@ -11,7 +11,7 @@ export type Contact = {
 export type Campaign = {
   id: string;
   title: string;
-  channel: 'BLOG' | 'NEWSLETTER' | 'WEBINAR' | 'DINNER';
+  channel: 'PRESENTATION' | 'LUNCH' | 'EVENTS';
   datePlanned: string;
   status: 'LIVE' | 'CLOSED';
   audienceIds: string[];

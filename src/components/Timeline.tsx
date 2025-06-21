@@ -28,32 +28,28 @@ const ActivityCard = ({ activity }: { activity: Activity }) => {
   return (
     <Card className="mb-4">
       <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <div className="flex items-center space-x-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${typeColors[activity.type]}`}>
-              {typeIcons[activity.type]}
-              <span>{activity.type}</span>
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {new Date(activity.date).toLocaleDateString()} at {new Date(activity.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-        </div>
         <CardTitle className="text-lg">{activity.summary}</CardTitle>
+        <div className="flex items-center text-sm text-muted-foreground mt-2">
+          <User className="w-4 h-4 mr-2" />
+          {contact ? `${contact.firstName} ${contact.lastName}` : 'Unknown Contact'}
+          {contact?.org && ` - ${contact.org}`}
+        </div>
+        <div className="flex justify-between items-center mt-3">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${typeColors[activity.type]}`}>
+            {typeIcons[activity.type]}
+            <span>{activity.type}</span>
+          </span>
+          <span className="text-sm text-muted-foreground">
+            {new Date(activity.date).toLocaleDateString()} at {new Date(activity.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <User className="w-4 h-4 mr-2" />
-            {contact ? `${contact.firstName} ${contact.lastName}` : 'Unknown Contact'}
-            {contact?.org && ` - ${contact.org}`}
+        {activity.details && (
+          <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+            {activity.details}
           </div>
-          {activity.details && (
-            <div className="text-sm text-muted-foreground whitespace-pre-wrap">
-              {activity.details}
-            </div>
-          )}
-        </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -144,7 +140,7 @@ const ActivityForm = ({
       </div>
 
       <div>
-        <label className="text-sm font-medium">Notes</label>
+        <label className="text-sm font-medium">Title</label>
         <textarea 
           className="w-full mt-1 p-3 border rounded-lg bg-background text-foreground resize-none hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
           rows={4}

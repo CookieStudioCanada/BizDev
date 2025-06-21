@@ -10,5 +10,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: '/BizDev/',
+  base: './',
+  define: {
+    global: 'globalThis',
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  }
 }) 

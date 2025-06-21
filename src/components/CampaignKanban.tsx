@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-import { Plus, Edit, Trash2, Calendar, Users } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, Users, Presentation, UtensilsCrossed, PartyPopper, ChevronRight, Target, CheckCircle } from 'lucide-react';
 
-const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
+const CampaignCard = ({ campaign, onEdit }: { campaign: Campaign; onEdit: (campaign: Campaign) => void }) => {
   const { contacts, updateCampaign, deleteCampaign } = useLrgmStore();
-
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const audienceContacts = contacts.filter(c => campaign.audienceIds.includes(c.id));
   
@@ -24,71 +24,158 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
     }
   };
 
-  const statusColors = {
-    LIVE: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-    CLOSED: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100',
+  const channelColors = {
+    PRESENTATION: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
+    LUNCH: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
+    EVENTS: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-100',
   };
 
-  const channelColors = {
-    BLOG: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
-    NEWSLETTER: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
-    WEBINAR: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-100',
-    DINNER: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-100',
+  const channelIcons = {
+    PRESENTATION: <Presentation className="w-4 h-4" />,
+    LUNCH: <UtensilsCrossed className="w-4 h-4" />,
+    EVENTS: <PartyPopper className="w-4 h-4" />,
   };
+
+  const isUpcoming = new Date(campaign.datePlanned) > new Date();
+  const daysToCampaign = Math.ceil((new Date(campaign.datePlanned).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <Card className="mb-4">
-      <CardHeader className="pb-3">
+    <Card className={`mb-4 hover:shadow-lg transition-all duration-300 border-l-4 ${
+      campaign.status === 'LIVE' 
+        ? 'border-l-green-500 bg-gradient-to-r from-green-50/50 to-transparent dark:from-green-950/20' 
+        : 'border-l-gray-400 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-950/20'
+    }`}>
+      <CardHeader className="pb-4">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{campaign.title}</CardTitle>
-          <div className="flex space-x-1">
-            <Button size="sm" variant="ghost" onClick={() => {}}>
-              <Edit className="w-4 h-4" />
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`p-2 rounded-lg ${channelColors[campaign.channel]}`}>
+                {channelIcons[campaign.channel]}
+              </div>
+              <div>
+                <CardTitle className="text-xl mb-1">{campaign.title}</CardTitle>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="capitalize font-medium">{campaign.channel.toLowerCase()}</span>
+                  <span>•</span>
+                  <span className={`flex items-center gap-1 ${campaign.status === 'LIVE' ? 'text-green-600' : 'text-gray-500'}`}>
+                    {campaign.status === 'LIVE' ? <Target className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                    {campaign.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onEdit(campaign)}
+              className="h-8"
+            >
+              <Edit className="w-3 h-3" />
             </Button>
-            <Button size="sm" variant="ghost" onClick={handleDelete}>
-              <Trash2 className="w-4 h-4" />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleDelete}
+              className="h-8 text-red-600 hover:text-red-700"
+            >
+              <Trash2 className="w-3 h-3" />
             </Button>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${channelColors[campaign.channel]}`}>
-            {campaign.channel}
-          </span>
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[campaign.status]}`}>
-            {campaign.status}
-          </span>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="bg-accent/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-primary">{audienceContacts.length}</div>
+            <div className="text-xs text-muted-foreground">Contacts</div>
+          </div>
+          <div className="bg-accent/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-primary">
+              {isUpcoming ? (daysToCampaign > 0 ? daysToCampaign : 'Today') : 'Past'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {isUpcoming ? 'Days left' : 'Event'}
+            </div>
+          </div>
+          <div className="bg-accent/50 rounded-lg p-3 text-center">
+            <div className="text-lg font-bold text-primary">
+              {new Date(campaign.datePlanned).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </div>
+            <div className="text-xs text-muted-foreground">Date</div>
+          </div>
+          <div className="bg-accent/50 rounded-lg p-3 text-center">
+            <Button
+              size="sm"
+              variant={campaign.status === 'LIVE' ? 'destructive' : 'default'}
+              onClick={() => handleStatusChange(campaign.status === 'LIVE' ? 'CLOSED' : 'LIVE')}
+              className="h-8 w-full text-xs"
+            >
+              {campaign.status === 'LIVE' ? 'Close' : 'Reopen'}
+            </Button>
+          </div>
         </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full justify-between h-8 text-sm"
+        >
+          <span>Campaign Details</span>
+          <ChevronRight className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+        </Button>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4 mr-2" />
-            {new Date(campaign.datePlanned).toLocaleDateString()}
+
+      {isExpanded && (
+        <CardContent className="pt-0">
+          <div className="space-y-4">
+            <div className="flex items-start gap-2">
+              <Calendar className="w-4 h-4 mt-1 text-muted-foreground" />
+              <div>
+                <div className="font-medium text-sm">Scheduled Date</div>
+                <div className="text-sm text-muted-foreground">
+                  {new Date(campaign.datePlanned).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {campaign.notes && (
+              <div className="flex items-start gap-2">
+                <Target className="w-4 h-4 mt-1 text-muted-foreground" />
+                <div>
+                  <div className="font-medium text-sm">Objectives</div>
+                  <div className="text-sm text-muted-foreground whitespace-pre-wrap">{campaign.notes}</div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-start gap-2">
+              <Users className="w-4 h-4 mt-1 text-muted-foreground" />
+              <div className="flex-1">
+                <div className="font-medium text-sm mb-2">Audience ({audienceContacts.length} contacts)</div>
+                <div className="flex flex-wrap gap-2">
+                  {audienceContacts.slice(0, 6).map(contact => (
+                    <span key={contact.id} className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
+                      {contact.firstName} {contact.lastName}
+                    </span>
+                  ))}
+                  {audienceContacts.length > 6 && (
+                    <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-full">
+                      +{audienceContacts.length - 6} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Users className="w-4 h-4 mr-2" />
-            {audienceContacts.length} contacts
-          </div>
-          {campaign.notes && (
-            <p className="text-sm text-muted-foreground mt-2">
-              {campaign.notes}
-            </p>
-          )}
-        </div>
-        
-        <div className="mt-4 flex space-x-2">
-          {campaign.status === 'LIVE' && (
-            <Button size="sm" onClick={() => handleStatusChange('CLOSED')}>
-              Close Campaign
-            </Button>
-          )}
-          {campaign.status === 'CLOSED' && (
-            <Button size="sm" onClick={() => handleStatusChange('LIVE')}>
-              Reopen Campaign
-            </Button>
-          )}
-        </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 };
@@ -105,7 +192,7 @@ const CampaignForm = ({
   const { contacts } = useLrgmStore();
   const [formData, setFormData] = useState({
     title: campaign?.title || '',
-    channel: campaign?.channel || 'NEWSLETTER' as Campaign['channel'],
+    channel: campaign?.channel || 'PRESENTATION' as Campaign['channel'],
     datePlanned: campaign?.datePlanned || new Date().toISOString().split('T')[0],
     status: campaign?.status || 'LIVE' as Campaign['status'],
     audienceIds: campaign?.audienceIds || [],
@@ -149,10 +236,9 @@ const CampaignForm = ({
               value={formData.channel}
               onChange={(e) => setFormData(prev => ({ ...prev, channel: e.target.value as Campaign['channel'] }))}
             >
-              <option value="BLOG">📝 Blog</option>
-              <option value="NEWSLETTER">📧 Newsletter</option>
-              <option value="WEBINAR">🎥 Webinar</option>
-              <option value="DINNER">🍽️ Dinner</option>
+              <option value="PRESENTATION">🎤 Presentation</option>
+              <option value="LUNCH">🍽️ Lunch</option>
+              <option value="EVENTS">🎉 Events</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,10 +352,9 @@ const CampaignForm = ({
               <div className="p-3 bg-accent/30 rounded-lg text-center">
                 <div className="text-sm text-muted-foreground">Channel</div>
                 <div className="text-lg font-semibold">
-                  {formData.channel === 'BLOG' && '📝'}
-                  {formData.channel === 'NEWSLETTER' && '📧'}
-                  {formData.channel === 'WEBINAR' && '🎥'}
-                  {formData.channel === 'DINNER' && '🍽️'}
+                  {formData.channel === 'PRESENTATION' && '🎤'}
+                  {formData.channel === 'LUNCH' && '🍽️'}
+                  {formData.channel === 'EVENTS' && '🎉'}
                 </div>
                 <div className="text-xs text-muted-foreground">{formData.channel.toLowerCase()}</div>
               </div>
@@ -291,7 +376,7 @@ const CampaignForm = ({
 };
 
 export const CampaignKanban = () => {
-  const { campaigns, addCampaign } = useLrgmStore();
+  const { campaigns, addCampaign, updateCampaign } = useLrgmStore();
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -300,9 +385,14 @@ export const CampaignKanban = () => {
     CLOSED: campaigns.filter(c => c.status === 'CLOSED'),
   };
 
+  const handleEdit = (campaign: Campaign) => {
+    setEditingCampaign(campaign);
+    setIsDialogOpen(true);
+  };
+
   const handleSave = (data: Omit<Campaign, 'id'>) => {
     if (editingCampaign) {
-      // Update handled in CampaignCard
+      updateCampaign(editingCampaign.id, data);
     } else {
       addCampaign(data);
     }
@@ -357,7 +447,7 @@ export const CampaignKanban = () => {
           </h3>
           <div className="space-y-4">
             {campaignsByStatus.LIVE.map(campaign => (
-              <CampaignCard key={campaign.id} campaign={campaign} />
+              <CampaignCard key={campaign.id} campaign={campaign} onEdit={handleEdit} />
             ))}
             {campaignsByStatus.LIVE.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
@@ -373,7 +463,7 @@ export const CampaignKanban = () => {
           </h3>
           <div className="space-y-4">
             {campaignsByStatus.CLOSED.map(campaign => (
-              <CampaignCard key={campaign.id} campaign={campaign} />
+              <CampaignCard key={campaign.id} campaign={campaign} onEdit={handleEdit} />
             ))}
             {campaignsByStatus.CLOSED.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
