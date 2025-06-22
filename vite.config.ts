@@ -10,12 +10,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: '/BizDev/',
+  base: './',
   define: {
     global: 'globalThis',
-  },
-  optimizeDeps: {
-    include: ['crypto-js']
   },
   build: {
     outDir: 'dist',

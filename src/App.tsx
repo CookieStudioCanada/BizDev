@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { HomePage } from '@/pages/HomePage';
 import { ContactsPage } from '@/pages/ContactsPage';
 import { CampaignsPage } from '@/pages/CampaignsPage';
@@ -140,16 +140,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-    <Router basename="/BizDev">
+    <Router>
       <AppLayout>
         <Routes>
-          <Route index element={<HomePage />} />
           <Route path="/" element={<HomePage />} />
-          <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/campaigns" element={<CampaignsPage />} />
           <Route path="/timeline" element={<TimelinePage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AppLayout>
     </Router>
